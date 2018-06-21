@@ -1,0 +1,20 @@
+function [ individual,total ] = PGmotion_with_rest_v2( data, rest )
+% calculates the joint travel of the mocap suit wrt the rest position
+
+[r,c] = size(data); % find the size of the motion data
+individual = ones(1,c); % initiate the column vector of the output
+path = 0; %initialize path length
+total = 0; %initialize total path length
+for i = 1:c
+    jointdata=data(:,i);  % each colum is the data from a particular joint
+    jointdata_norm = jointdata - rest(i);  % normalized wrt to the rest position
+    jointdata_norm_abs = abs(jointdata_norm); % absolute value of the normalized position
+    jointmotion = trapz(jointdata_norm_abs); % trapezoidal integration of the motion
+    individual(i) = jointmotion; % write the joint path to the output vector
+    i=i+1; % move to next joint
+end
+
+total = sum(individual);  % add the joint motions
+
+end
+
